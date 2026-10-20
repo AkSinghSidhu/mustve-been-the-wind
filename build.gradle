@@ -23,6 +23,15 @@ loom {
 			sourceSet sourceSets.client
 		}
 	}
+
+	runs {
+		client {
+			// Dev convenience: boot straight into the test world and enable the
+			// file-driven command harness, so automated tests need no keystrokes.
+			programArgs "--quickPlaySingleplayer", "New World"
+			vmArg "-Dwindsmoke.testharness=true"
+		}
+	}
 }
 
 dependencies {

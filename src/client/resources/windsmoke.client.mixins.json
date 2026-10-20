@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "com.windsmoke.client.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"CampfireBlockEntityMixin",
+		"CloudRendererMixin",
+		"WeatherEffectRendererMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

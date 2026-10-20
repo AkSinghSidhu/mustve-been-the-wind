@@ -67,25 +67,39 @@ public final class SmokeAttraction {
 			monster -> !monster.isDeadOrDying() && monster.getTarget() == null);
 
 		for (Monster monster : monsters) {
-			Vec3 delta = center.subtract(monster.position());
-			double distance = delta.length();
+			Vec3 toMob = monster.position().subtract(center);
+			double distance = toMob.length();
 			if (distance < 2.5 || distance > ATTRACT_RADIUS) {
 				continue;
 			}
 
-			double horizontal = Math.sqrt(delta.x * delta.x + delta.z * delta.z);
+			double horizontal = Math.sqrt(toMob.x * toMob.x + toMob.z * toMob.z);
 			if (horizontal < 0.001) {
 				continue;
 			}
 
 			// The mob must lie downwind of the fire for the smoke to reach it.
-			double alignment = (delta.x * windX + delta.z * windZ) / horizontal;
+			double alignment = (toMob.x * windX + toMob.z * windZ) / horizontal;
 			if (alignment < DOWNWIND_COS) {
 				continue;
 			}
 
 			if (monster.getNavigation().isDone() || monster.tickCount % 40 == 0) {
-				monster.getNavigation().moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.7);
+				// Stop a couple of blocks short so mobs investigate from a distance
+				// instead of walking into the flames and burning to death.
+				double stop = 2.0;
+				double targetX = pos.getX() + 0.5 + windX * stop;
+				double targetZ = pos.getZ() + 0.5 + windZ * stop;
+
+				if (Boolean.getBoolean("windsmoke.testharness")) {
+					WindSmoke.LOGGER.info("[windsmoke] nudge {} fire={} mob=({}, {}, {}) dist={} align={} target=({}, {})",
+						monster.getName().getString(), pos.toShortString(),
+						String.format("%.1f", monster.getX()), String.format("%.1f", monster.getY()),
+						String.format("%.1f", monster.getZ()), String.format("%.1f", distance),
+						String.format("%.2f", alignment), String.format("%.1f", targetX), String.format("%.1f", targetZ));
+				}
+
+				monster.getNavigation().moveTo(targetX, pos.getY(), targetZ, 0.7);
 			}
 		}
 	}

@@ -10,7 +10,6 @@ public class WindSmokeClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(WindPayload.TYPE, (payload, context) ->
 			WindClientState.set(payload.angle(), payload.strength()));
-
-		ClientTickEvents.END_CLIENT_TICK.register(SmokeParticles::tick);
+		ClientTickEvents.END_CLIENT_TICK.register(client -> WindVisuals.tick());
 	}
 }
