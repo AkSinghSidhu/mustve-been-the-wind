@@ -16,7 +16,8 @@ import net.minecraft.util.RandomSource;
  *
  * <p>Day/night is a smooth cosine, so dawn and dusk sit between the two bands
  * instead of switching abruptly. Rain and thunder levels are blended in, which
- * makes a storm ramp up and down with the weather. A {@link SeasonProfile} can
+ * makes a storm ramp up and down with the weather; the thunder blend is eased
+ * so onset and decay are slower than the raw level. A {@link SeasonProfile} can
  * scale the whole table later; {@link SeasonProfile#TEMPERATE} is neutral and is
  * used until seasons exist.
  */
@@ -24,7 +25,16 @@ public final class WindClimate {
 	/** A strength band. The live wind picks targets inside it. */
 	public record Range(float min, float max) {
 		public float sample(RandomSource random) {
-			return Mth.lerp(random.nextFloat(), this.min, this.max);
+			return this.sample(random, 1.0F);
+		}
+
+		/**
+		 * Sample the band, but only from its lower {@code coverage} fraction.
+		 * A coverage below 1 is how the slow wind cycle makes the background
+		 * wind spend time in the calmer part of its band.
+		 */
+		public float sample(RandomSource random, float coverage) {
+			return Mth.lerp(random.nextFloat() * Mth.clamp(coverage, 0.0F, 1.0F), this.min, this.max);
 		}
 
 		public Range times(float scale) {
@@ -61,7 +71,9 @@ public final class WindClimate {
 		Range wet = lerp(RAIN_NIGHT, RAIN_DAY, daylight);
 		Range storm = lerp(THUNDER_NIGHT, THUNDER_DAY, daylight);
 
-		Range range = lerp(lerp(clear, wet, rain), storm, thunder);
+		// Ease the storm blend so the wind climbs out of the rain band and
+		// settles back into it instead of snapping with the raw weather level.
+		Range range = lerp(lerp(clear, wet, rain), storm, smooth(thunder));
 		return range.times(season.strengthScale());
 	}
 
@@ -76,5 +88,10 @@ public final class WindClimate {
 
 	private static Range lerp(Range a, Range b, float t) {
 		return new Range(Mth.lerp(t, a.min(), b.min()), Mth.lerp(t, a.max(), b.max()));
+	}
+
+	private static float smooth(float t) {
+		t = Mth.clamp(t, 0.0F, 1.0F);
+		return t * t * (3.0F - 2.0F * t);
 	}
 }

@@ -17,14 +17,20 @@ public final class WindManager {
 
 	public static void tick(MinecraftServer server) {
 		STATE.tick(server);
+		long time = server.overworld().getGameTime();
 
-		if (server.overworld().getGameTime() % 20L == 0L) {
+		// Gusts last only a few seconds, so push the wind to clients four times
+		// a second; smoke, clouds and rain then follow the same envelope.
+		if (time % 5L == 0L) {
 			syncAll(server);
+		}
+
+		if (time % 20L == 0L) {
 			SmokeAttraction.tick(server, STATE);
 		}
 	}
 
-	/** Push the current wind to every player (once a second, and on /wind set). */
+	/** Push the current wind to every player (4x a second, and on /wind set). */
 	public static void syncAll(MinecraftServer server) {
 		WindPayload payload = new WindPayload(STATE.angle(), STATE.strength());
 
