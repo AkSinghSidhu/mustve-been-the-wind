@@ -15,6 +15,11 @@ public final class WindManager {
 		return STATE;
 	}
 
+	/** Reset all server-authoritative wind state between worlds. */
+	public static void reset() {
+		STATE.reset();
+	}
+
 	public static void tick(MinecraftServer server) {
 		STATE.tick(server);
 		long time = server.overworld().getGameTime();

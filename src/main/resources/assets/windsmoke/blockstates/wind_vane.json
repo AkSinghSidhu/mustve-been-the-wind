@@ -1,0 +1,100 @@
+{
+	"variants": {
+		"comparator=true,rotation=0": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=1": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=2": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=3": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=4": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=5": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=6": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=7": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=8": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=9": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=10": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=11": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=12": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=13": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=14": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=true,rotation=15": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=0": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=1": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=2": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=3": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=4": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=5": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=6": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=7": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=8": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=9": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=10": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=11": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=12": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=13": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=14": {
+			"model": "windsmoke:block/wind_vane"
+		},
+		"comparator=false,rotation=15": {
+			"model": "windsmoke:block/wind_vane"
+		}
+	}
+}

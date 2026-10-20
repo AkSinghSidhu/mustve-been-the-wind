@@ -1,17 +1,20 @@
 package com.windsmoke.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.windsmoke.WindClimate;
 import com.windsmoke.WindEvent;
 import com.windsmoke.WindManager;
 import com.windsmoke.WindSmoke;
+import com.windsmoke.WindSmokeServerConfig;
 import com.windsmoke.WindState;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permissions;
 
 public final class WindCommand {
 	private WindCommand() {
@@ -29,6 +32,12 @@ public final class WindCommand {
 							FloatArgumentType.getFloat(command, "strength"))))))
 			.then(Commands.literal("auto")
 				.executes(command -> release(command.getSource())))
+			.then(Commands.literal("smoke")
+				.executes(command -> reportSmoke(command.getSource()))
+				.then(Commands.argument("enabled", BoolArgumentType.bool())
+					.requires(command -> command.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
+					.executes(command -> setSmoke(command.getSource(),
+						BoolArgumentType.getBool(command, "enabled")))))
 			.then(Commands.literal("event")
 				.executes(command -> listEvents(command.getSource()))
 				.then(Commands.argument("type", StringArgumentType.word())
@@ -55,6 +64,21 @@ public final class WindCommand {
 			WindSmoke.LOGGER.info("[windsmoke] {}", text);
 		}
 		source.sendSuccess(() -> Component.literal(text), false);
+		return 1;
+	}
+
+	private static int reportSmoke(CommandSourceStack source) {
+		source.sendSuccess(() -> Component.literal(String.format(
+			"Campfire smoke attraction is %s (radius %d blocks)",
+			WindSmokeServerConfig.smokeAttractsMobs() ? "enabled" : "disabled",
+			WindSmokeServerConfig.smokeAttractionRadius())), false);
+		return 1;
+	}
+
+	private static int setSmoke(CommandSourceStack source, boolean enabled) {
+		WindSmokeServerConfig.setSmokeAttractsMobs(enabled);
+		source.sendSuccess(() -> Component.literal(
+			"Campfire smoke attraction " + (enabled ? "enabled" : "disabled")), true);
 		return 1;
 	}
 

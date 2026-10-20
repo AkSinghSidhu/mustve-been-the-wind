@@ -257,6 +257,32 @@ public final class WindState {
 		return COMPASS[Math.floorMod(Math.round(this.angle / 45.0F), 8)];
 	}
 
+	/**
+	 * Return to a clean startup state. Called when a server starts or stops so a
+	 * pinned wind or an event schedule cannot leak into the next world opened in
+	 * the same client process.
+	 */
+	public void reset() {
+		this.season = WindClimate.SeasonProfile.TEMPERATE;
+		this.angle = 90.0F;
+		this.strength = 0.05F;
+		this.targetAngle = 90.0F;
+		this.targetStrength = 0.05F;
+		this.pinned = false;
+		this.nextDirection = 0L;
+		this.nextStrength = 0L;
+		this.scheduled = false;
+		this.nextEvent = 0L;
+		this.event = null;
+		this.eventStart = 0L;
+		this.eventEnd = 0L;
+		this.eventPeak = 0.0F;
+		this.eventVeer = 0.0F;
+		this.previousRain = 0.0F;
+		this.previousThunder = 0.0F;
+		this.weatherSeen = false;
+	}
+
 	/** Pin the wind (used by /wind set and tests). */
 	public void set(float angle, float strength) {
 		this.angle = Mth.wrapDegrees(angle);

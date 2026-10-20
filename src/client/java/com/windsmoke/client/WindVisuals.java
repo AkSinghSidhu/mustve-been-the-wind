@@ -16,17 +16,31 @@ public final class WindVisuals {
 
 	private static double cloudOffsetX;
 	private static double cloudOffsetZ;
+	private static float animationTime;
 
 	private WindVisuals() {
 	}
 
 	public static void tick() {
-		double strength = WindClientState.strength();
+		animationTime += 1.0F;
+		double strength = WindSmokeConfig.visualStrength();
 		double speed = CLOUD_BLOCKS_PER_TICK * strength;
 		// Adding to the camera offset shifts the sampled cloud texture the
 		// opposite way, hence the minus.
 		cloudOffsetX -= windX() * speed;
 		cloudOffsetZ -= windZ() * speed;
+	}
+
+	/** Client tick counter used by the block and banner sway animations. */
+	public static float animationTime() {
+		return animationTime;
+	}
+
+	/** Clear accumulated motion when the client leaves a world. */
+	public static void reset() {
+		cloudOffsetX = 0.0;
+		cloudOffsetZ = 0.0;
+		animationTime = 0.0F;
 	}
 
 	public static double windX() {
@@ -47,11 +61,11 @@ public final class WindVisuals {
 
 	/** Top-of-column lean along X: upwind, so the streak trails behind the drop. */
 	public static float precipitationLeanX() {
-		return (float)(-windX() * PRECIPITATION_LEAN * WindClientState.strength());
+		return (float)(-windX() * PRECIPITATION_LEAN * WindSmokeConfig.visualStrength());
 	}
 
 	/** Top-of-column lean along Z: upwind, so the streak trails behind the drop. */
 	public static float precipitationLeanZ() {
-		return (float)(-windZ() * PRECIPITATION_LEAN * WindClientState.strength());
+		return (float)(-windZ() * PRECIPITATION_LEAN * WindSmokeConfig.visualStrength());
 	}
 }

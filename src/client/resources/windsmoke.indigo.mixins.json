@@ -1,0 +1,12 @@
+{
+	"required": false,
+	"package": "com.windsmoke.client.mixin.indigo",
+	"compatibilityLevel": "JAVA_21",
+	"plugin": "com.windsmoke.client.WindSmokeMixinPlugin",
+	"client": [
+		"IndigoTerrainContextMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
