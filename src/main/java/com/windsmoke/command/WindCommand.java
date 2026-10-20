@@ -2,6 +2,7 @@ package com.windsmoke.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.windsmoke.WindClimate;
 import com.windsmoke.WindManager;
 import com.windsmoke.WindSmoke;
 import com.windsmoke.WindState;
@@ -30,9 +31,10 @@ public final class WindCommand {
 
 	private static int report(CommandSourceStack source) {
 		WindState wind = WindManager.state();
-		String text = String.format("Wind blows %s (%.0f deg) at %.0f%% strength [%s]%s",
+		WindClimate.Range range = wind.currentRange(source.getServer());
+		String text = String.format("Wind blows %s (%.0f deg) at %.0f%% strength [%s %.0f-%.0f%%%s]",
 			wind.compass(), wind.angle(), wind.strength() * 100.0F, wind.weatherLabel(source.getServer()),
-			wind.pinned() ? " [pinned]" : "");
+			range.min() * 100.0F, range.max() * 100.0F, wind.pinned() ? ", pinned" : "");
 		if (Boolean.getBoolean("windsmoke.testharness")) {
 			WindSmoke.LOGGER.info("[windsmoke] {}", text);
 		}
