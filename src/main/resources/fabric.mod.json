@@ -1,0 +1,27 @@
+{
+	"schemaVersion": 1,
+	"id": "windsmoke",
+	"version": "${version}",
+	"name": "Wind & Smoke",
+	"description": "A living wind system: campfire smoke bends downwind and draws hostile mobs to it.",
+	"authors": [
+		"Wind & Smoke"
+	],
+	"license": "CC0-1.0",
+	"icon": "assets/windsmoke/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.windsmoke.WindSmoke"
+		],
+		"client": [
+			"com.windsmoke.client.WindSmokeClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
