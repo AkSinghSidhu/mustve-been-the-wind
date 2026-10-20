@@ -2,11 +2,16 @@
 	"schemaVersion": 1,
 	"id": "windsmoke",
 	"version": "${version}",
-	"name": "Wind & Smoke",
-	"description": "A living wind system: campfire smoke bends downwind and draws hostile mobs to it.",
+	"name": "Must've Been the Wind",
+	"description": "A living wind system: weather-driven gusts, wind-blown campfire smoke, slanting rain, and drifting clouds.",
 	"authors": [
-		"Wind & Smoke"
+		"AkSinghSidhu"
 	],
+	"contact": {
+		"homepage": "https://github.com/AkSinghSidhu/mustve-been-the-wind",
+		"sources": "https://github.com/AkSinghSidhu/mustve-been-the-wind",
+		"issues": "https://github.com/AkSinghSidhu/mustve-been-the-wind/issues"
+	},
 	"license": "CC0-1.0",
 	"icon": "assets/windsmoke/icon.png",
 	"environment": "*",

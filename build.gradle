@@ -7,7 +7,7 @@ version = project.version
 group = project.group
 
 base {
-	archivesName = "wind-smoke"
+	archivesName = "mustve-been-the-wind"
 }
 
 repositories {
@@ -26,10 +26,12 @@ loom {
 
 	runs {
 		client {
-			// Dev convenience: boot straight into the test world and enable the
-			// file-driven command harness, so automated tests need no keystrokes.
-			programArgs "--quickPlaySingleplayer", "New World"
-			vmArg "-Dwindsmoke.testharness=true"
+			// Optional local automation. Enable with -PwindsmokeTest when a
+			// "New World" test save exists; normal runClient stays vanilla.
+			if (project.hasProperty("windsmokeTest")) {
+				programArgs "--quickPlaySingleplayer", "New World"
+				vmArg "-Dwindsmoke.testharness=true"
+			}
 		}
 	}
 }

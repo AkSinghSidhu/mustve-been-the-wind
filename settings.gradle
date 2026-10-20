@@ -9,5 +9,5 @@ pluginManagement {
 	}
 }
 
-// Should match your modid
-rootProject.name = 'wind-smoke'
+// Human-readable project name; the technical mod id stays "windsmoke".
+rootProject.name = 'mustve-been-the-wind'
