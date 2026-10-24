@@ -1,8 +1,11 @@
 package com.windsmoke.client;
 
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.windsmoke.WindSmoke;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -95,6 +98,61 @@ public final class WindSway {
 		wrapper.set(delegate, state, pos, profile);
 
 		return wrapper;
+	}
+
+	/**
+	 * Tags the four vertices of a 26.2 quad while {@link #begin(BlockState,
+	 * BlockPos)} is active for the current thread.
+	 */
+	public static void tagCurrentQuad(float y, BakedQuad quad, QuadInstance instance) {
+		Context context = CONTEXT.get();
+
+		if (context == null) {
+			return;
+		}
+
+		for (int vertex = 0; vertex < 4; vertex++) {
+			// Section-local vertex Y, matching the shader's ChunkPosition
+			// coordinate space.
+			float vertexY = y + quad.position(vertex).y();
+			int color = instance.getColor(vertex);
+			int tagged = tagColor(
+				context.state(),
+				context.pos(),
+				context.profile(),
+				color,
+				vertexY
+			);
+
+			instance.setColor(vertex, tagged);
+		}
+	}
+
+	/**
+	 * Tags a quad emitted by Fabric's Indigo renderer. Indigo stores vertex
+	 * colours in its own quad representation instead of a {@link QuadInstance},
+	 * so the code has to be written through {@link MutableQuadView}.
+	 */
+	public static void tagCurrentIndigoQuad(MutableQuadView quad, float baseY) {
+		Context context = CONTEXT.get();
+
+		if (context == null) {
+			return;
+		}
+
+		for (int vertex = 0; vertex < 4; vertex++) {
+			float vertexY = baseY + quad.y(vertex);
+			int color = quad.color(vertex);
+			int tagged = tagColor(
+				context.state(),
+				context.pos(),
+				context.profile(),
+				color,
+				vertexY
+			);
+
+			quad.color(vertex, tagged);
+		}
 	}
 
 	private static Profile profile(BlockState state) {

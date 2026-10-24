@@ -180,8 +180,11 @@ public final class WindShaderPatcher {
 
 	private static final String SODIUM_POSITION_BODY = """
 
+	    // Sodium's u_RegionOffset is relative to the camera, so position is
+	    // camera-relative. Wind noise and its distance fade need world space.
+	    vec3 windsmokeWorld = position + WindSmokeCamera.xyz;
 	    if (windsmokeCode >= 0.0 && windsmokeCode < 64.0) {
-	        position += windsmoke_offset(position, windsmokeCode);
+	        position += windsmoke_offset(windsmokeWorld, windsmokeCode);
 	    }
 	""";
 
@@ -252,9 +255,10 @@ public final class WindShaderPatcher {
 		try {
 			StringBuilder out = new StringBuilder(source);
 
-			// Sodium's vertex shader already builds a world-space position.
-			// Decode the alpha tag after _vert_init, restore the colour alpha,
-			// then displace the world position before the MVP transform.
+			// Sodium's vertex shader builds a camera-relative position from
+			// u_RegionOffset and the section draw id. Decode the alpha tag
+			// after _vert_init, restore the colour alpha, then displace the
+			// camera-relative position before the MVP transform.
 			out.insert(position.end(), SODIUM_POSITION_BODY);
 			out.insert(init.end(), SODIUM_INIT_BODY);
 			out.insert(main, HEADER);

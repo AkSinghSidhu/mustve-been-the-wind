@@ -3,7 +3,7 @@ package com.windsmoke.client;
 import com.windsmoke.block.ModBlockEntities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -25,7 +25,7 @@ public class WindSmokeClient implements ClientModInitializer {
 			);
 		}
 		BlockEntityRenderers.register(ModBlockEntities.WIND_VANE, context -> new WindVaneRenderer());
-		configKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+		configKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.windsmoke.config",
 			InputConstants.Type.KEYSYM,
 			GLFW.GLFW_KEY_F8,
@@ -43,7 +43,7 @@ public class WindSmokeClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			WindVisuals.tick();
 			while (configKey.consumeClick()) {
-				client.setScreen(new WindConfigScreen(client.screen));
+				client.setScreenAndShow(new WindConfigScreen(client.gui.screen()));
 			}
 		});
 	}

@@ -23,7 +23,7 @@ public final class CampfireSmoke {
 			return;
 		}
 
-		Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().position();
+		Vec3 camera = Minecraft.getInstance().gameRenderer.mainCamera().position();
 		double maxDistance = WindSmokeConfig.effectDistanceBlocks();
 		if (camera.distanceToSqr(Vec3.atCenterOf(pos)) > maxDistance * maxDistance) {
 			return;

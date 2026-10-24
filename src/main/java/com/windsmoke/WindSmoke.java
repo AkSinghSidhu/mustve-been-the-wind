@@ -28,8 +28,8 @@ public class WindSmoke implements ModInitializer {
 		ModBlocks.register();
 		ModBlockEntities.register();
 		ModItems.register();
-		PayloadTypeRegistry.playS2C().register(WindPayload.TYPE, WindPayload.CODEC);
-		PayloadTypeRegistry.playC2S().register(WindControlPayload.TYPE, WindControlPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(WindPayload.TYPE, WindPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(WindControlPayload.TYPE, WindControlPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(WindControlPayload.TYPE, (payload, context) -> {
 			var player = context.player();
 			var server = context.server();
@@ -39,27 +39,26 @@ public class WindSmoke implements ModInitializer {
 			boolean allowed = player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)
 				|| (server.isSingleplayer() && server.getPlayerList().getPlayerCount() == 1);
 			if (!allowed) {
-				player.displayClientMessage(Component.translatable("windsmoke.debug.denied"), false);
+				player.sendSystemMessage(Component.translatable("windsmoke.debug.denied"));
 				return;
 			}
 
 			if (!Float.isFinite(payload.angle()) || !Float.isFinite(payload.strength())) {
-				player.displayClientMessage(Component.translatable("windsmoke.debug.invalid"), false);
+				player.sendSystemMessage(Component.translatable("windsmoke.debug.invalid"));
 				return;
 			}
 
 			if (payload.release()) {
 				WindManager.state().unpin();
-				player.displayClientMessage(Component.translatable("windsmoke.debug.released"), true);
+				player.sendOverlayMessage(Component.translatable("windsmoke.debug.released"));
 			} else {
 				WindManager.state().set(payload.angle(), payload.strength());
-				player.displayClientMessage(
+				player.sendOverlayMessage(
 					Component.translatable(
 						"windsmoke.debug.applied",
 						Math.round((payload.angle() % 360.0F + 360.0F) % 360.0F),
 						Math.round(payload.strength() * 100.0F)
-					),
-					true
+					)
 				);
 			}
 			WindManager.syncAll(server);

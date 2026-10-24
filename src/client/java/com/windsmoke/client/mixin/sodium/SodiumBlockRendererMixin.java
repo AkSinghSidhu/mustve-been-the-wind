@@ -2,7 +2,7 @@ package com.windsmoke.client.mixin.sodium;
 
 import com.windsmoke.client.WindSway;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * {@code BlockRenderDispatcher.renderBatched}. Track the block being rendered
  * so the Sodium vertex hooks can tag the vertices that belong to it.
  */
-@Mixin(BlockRenderer.class)
+@Mixin(value = BlockRenderer.class, remap = false)
 public abstract class SodiumBlockRendererMixin {
 	@Inject(method = "renderModel", at = @At("HEAD"))
 	private void windsmoke$beginBlock(

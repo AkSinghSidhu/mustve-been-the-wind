@@ -65,7 +65,7 @@ public final class WindClimate {
 	public static Range range(ServerLevel level, SeasonProfile season) {
 		float rain = Mth.clamp(level.getRainLevel(1.0F), 0.0F, 1.0F);
 		float thunder = Mth.clamp(level.getThunderLevel(1.0F), 0.0F, 1.0F);
-		float daylight = daylight(level.getDayTime());
+		float daylight = daylight(level.getOverworldClockTime());
 
 		Range clear = lerp(CLEAR_NIGHT, CLEAR_DAY, daylight);
 		Range wet = lerp(RAIN_NIGHT, RAIN_DAY, daylight);

@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * before the collector copies them so a later deferred write keeps the wind
  * code as well as an immediate push.
  */
-@Mixin(TranslucentGeometryCollector.class)
+@Mixin(value = TranslucentGeometryCollector.class, remap = false)
 public abstract class SodiumTranslucentGeometryCollectorMixin {
 	@Inject(
 		method = "appendQuad([Lnet/caffeinemc/mods/sodium/client/render/chunk/vertex/format/ChunkVertexEncoder$Vertex;Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;I)Z",

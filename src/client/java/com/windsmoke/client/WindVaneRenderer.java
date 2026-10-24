@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
@@ -29,7 +29,7 @@ public final class WindVaneRenderer implements BlockEntityRenderer<WindVaneBlock
 	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(
 		WindSmoke.MOD_ID, "textures/entity/wind_vane_arrow.png"
 	);
-	private static final RenderType RENDER_TYPE = RenderTypes.entityCutoutNoCull(TEXTURE);
+	private static final RenderType RENDER_TYPE = RenderTypes.entityCutout(TEXTURE);
 	private static final float MIN_X = -0.46F;
 	private static final float MAX_X = 0.46F;
 	private static final float MIN_Y = 0.70F;

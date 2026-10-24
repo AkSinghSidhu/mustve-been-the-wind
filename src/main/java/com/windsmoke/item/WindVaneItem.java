@@ -26,11 +26,11 @@ public class WindVaneItem extends BlockItem {
 		// falls through BlockItem#useOn and places the vane.
 		if (!level.isClientSide()) {
 			WindState wind = WindManager.state();
-			player.displayClientMessage(Component.translatable(
+			player.sendOverlayMessage(Component.translatable(
 				"block.windsmoke.wind_vane.readout_short",
 				wind.compass(),
 				Math.round(wind.strength() * 100.0F)
-			), true);
+			));
 		}
 
 		return InteractionResult.SUCCESS;

@@ -2,7 +2,7 @@ package com.windsmoke.client;
 
 import com.windsmoke.net.WindControlPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -64,19 +64,19 @@ public final class WindDebugScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-		super.render(graphics, mouseX, mouseY, partialTick);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+		super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 		boolean compact = this.height < 320;
-		graphics.drawCenteredString(
+		graphics.centeredText(
 			this.font, this.title, this.width / 2, compact ? 10 : 18, 0xFFFFFFFF);
-		graphics.drawCenteredString(
+		graphics.centeredText(
 			this.font,
 			Component.translatable("windsmoke.debug.note"),
 			this.width / 2,
 			compact ? 24 : 34,
 			0xFFA0A0A0
 		);
-		graphics.drawCenteredString(
+		graphics.centeredText(
 			this.font,
 			Component.translatable(
 				"windsmoke.debug.current",
@@ -91,7 +91,7 @@ public final class WindDebugScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(this.parent);
+		this.minecraft.setScreenAndShow(this.parent);
 	}
 
 	private static String compass(float angle) {

@@ -1,6 +1,6 @@
 # Must've Been the Wind
 
-![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-3C8527)
+![Minecraft 26.2](https://img.shields.io/badge/Minecraft-26.2-3C8527)
 ![Fabric 0.19.5+](https://img.shields.io/badge/Fabric-0.19.5%2B-1976D2)
 ![License CC0-1.0](https://img.shields.io/badge/License-CC0--1.0-lightgrey)
 
@@ -102,31 +102,33 @@ positions and normals.
 
 ## Sodium compatibility
 
-Sodium **0.8.7+mc1.21.11** is supported as an optional client integration. When Sodium is installed,
+Sodium **0.9.2+mc26.2** is supported as an optional client integration. When Sodium is installed,
 Must've Been the Wind patches Sodium's terrain shader at runtime and tags Sodium's chunk vertices, so
-grass, flowers, crops, leaves and hanging lanterns sway under Sodium's renderer too. The vanilla and
-Fabric Indigo renderer paths remain unchanged.
+grass, flowers, crops, leaves and hanging lanterns sway under Sodium's renderer too. Vanilla and
+Fabric Indigo are supported as separate paths; Indigo bypasses the vanilla model renderer, so its
+quads are tagged through Indigo's `AltModelBlockRendererImpl` instead.
 
-The integration is client-side and version-specific. Other Sodium versions, Iris shader packs and the
-26.2 renderer are not covered yet.
+The integration is client-side and version-specific. The 1.21.11 branch supports Sodium
+**0.8.7+mc1.21.11**; this 26.2 branch targets Sodium **0.9.2+mc26.2**. Iris shader packs are not
+covered yet. Sodium's Vulkan backend is untested; the current integration targets OpenGL.
 
 ## Requirements
 
 | | |
 |---|---|
-| Minecraft | 1.21.11 |
+| Minecraft | 26.2 |
 | Fabric Loader | 0.19.5 or newer |
-| Fabric API | 0.141.6+1.21.11 or newer |
-| Java | 21 or newer |
-| Sodium (optional) | 0.8.7+mc1.21.11 (tested) |
+| Fabric API | 0.161.0+26.2 or newer |
+| Java | 25 or newer |
+| Sodium (optional) | 0.9.2+mc26.2 (tested) |
 
 Install the mod on both the client and server. The server owns the wind state; the client uses it for
 the visual effects.
 
 ## Installation
 
-1. Install Fabric Loader for Minecraft 1.21.11.
-2. Download [Fabric API](https://modrinth.com/mod/fabric-api) for 1.21.11.
+1. Install Fabric Loader for Minecraft 26.2.
+2. Download [Fabric API](https://modrinth.com/mod/fabric-api) for 26.2.
 3. Put both `fabric-api-*.jar` and `mustve-been-the-wind-*.jar` into your `mods` folder.
 4. Launch the Fabric profile.
 
@@ -142,7 +144,7 @@ the visual effects.
 
 ## Building from source
 
-You need JDK 21 or newer. The Gradle wrapper handles the rest.
+You need JDK 25 or newer. The Gradle wrapper handles the rest.
 
 ```bash
 git clone https://github.com/AkSinghSidhu/mustve-been-the-wind.git
@@ -150,7 +152,7 @@ cd mustve-been-the-wind
 ./gradlew build
 ```
 
-The mod jar is written to `build/libs/mustve-been-the-wind-0.1.0.jar`.
+The mod jar is written to `build/libs/mustve-been-the-wind-0.1.0+26.2.jar`.
 
 For a normal development client:
 
@@ -166,6 +168,9 @@ For a normal development client:
   visible in particles, clouds and weather.
 - Client mixins redirect the campfire smoke spawn, offset the cloud renderer, shear precipitation
   vertices for the wind lean, and nudge plant and hanging-block vertices.
+- With Sodium, the same wind tags are written into Sodium's packed chunk vertices and the displacement
+  is injected into Sodium's terrain shader. Sodium's region offset is camera-relative, so the shader
+  reconstructs the world position before sampling the wind field.
 - Banner flags use their render-state animation phase plus the live wind to flap harder in a storm.
 - The wind vane's arrow is drawn by a block entity renderer; its 16-way block state supplies the
   comparator direction signal.

@@ -50,7 +50,7 @@ public final class WindShaderUniforms {
 		}
 
 		Minecraft minecraft = Minecraft.getInstance();
-		boolean inWorld = minecraft.level != null;
+		boolean inWorld = minecraft.level != null && minecraft.gameRenderer != null;
 		double seconds = (System.nanoTime() - START) / 1.0E9;
 
 		INFO[0] = (float) (seconds % 3600.0);
@@ -63,10 +63,17 @@ public final class WindShaderUniforms {
 		WIND[2] = 0.0F;
 		WIND[3] = 0.0F;
 
-		var camera = minecraft.gameRenderer.getMainCamera().position();
-		CAMERA[0] = (float)camera.x;
-		CAMERA[1] = (float)camera.y;
-		CAMERA[2] = (float)camera.z;
+		if (inWorld) {
+			var camera = minecraft.gameRenderer.mainCamera().position();
+			CAMERA[0] = (float)camera.x;
+			CAMERA[1] = (float)camera.y;
+			CAMERA[2] = (float)camera.z;
+		} else {
+			CAMERA[0] = 0.0F;
+			CAMERA[1] = 0.0F;
+			CAMERA[2] = 0.0F;
+		}
+
 		CAMERA[3] = inWorld ? WindSmokeConfig.effectDistanceBlocks() : 0.0F;
 
 		if (locations[0] >= 0) {

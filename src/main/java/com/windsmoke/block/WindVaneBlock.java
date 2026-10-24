@@ -89,15 +89,14 @@ public class WindVaneBlock extends Block implements EntityBlock {
 				boolean enabled = !state.getValue(COMPARATOR);
 				level.setBlock(pos, state.setValue(COMPARATOR, enabled), 3);
 				level.updateNeighbourForOutputSignal(pos, this);
-				player.displayClientMessage(
+				player.sendOverlayMessage(
 					Component.translatable(enabled
 						? "block.windsmoke.wind_vane.comparator_on"
-						: "block.windsmoke.wind_vane.comparator_off"),
-					true
+						: "block.windsmoke.wind_vane.comparator_off")
 				);
 			} else {
 				WindState wind = WindManager.state();
-				player.displayClientMessage(
+				player.sendOverlayMessage(
 					Component.translatable(
 						"block.windsmoke.wind_vane.readout",
 						wind.compass(),
@@ -105,8 +104,7 @@ public class WindVaneBlock extends Block implements EntityBlock {
 						Component.translatable(state.getValue(COMPARATOR)
 							? "block.windsmoke.wind_vane.comparator_enabled"
 							: "block.windsmoke.wind_vane.comparator_disabled")
-					),
-					true
+					)
 				);
 			}
 		}

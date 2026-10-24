@@ -65,7 +65,7 @@ public final class BannerIdentity {
 			return false;
 		}
 
-		Vec3 camera = minecraft.gameRenderer.getMainCamera().position();
+		Vec3 camera = minecraft.gameRenderer.mainCamera().position();
 		return camera.distanceToSqr(Vec3.atCenterOf(entry.pos())) <= maxDistance * maxDistance;
 	}
 

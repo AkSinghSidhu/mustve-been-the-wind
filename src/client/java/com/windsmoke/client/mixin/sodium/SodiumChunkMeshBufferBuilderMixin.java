@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * stores colours as ABGR, so changing the high byte leaves RGB untouched and
  * lets the patched vertex shader decode the wind category from alpha.
  */
-@Mixin(ChunkMeshBufferBuilder.class)
+@Mixin(value = ChunkMeshBufferBuilder.class, remap = false)
 public abstract class SodiumChunkMeshBufferBuilderMixin {
 	@Inject(
 		method = "push([Lnet/caffeinemc/mods/sodium/client/render/chunk/vertex/format/ChunkVertexEncoder$Vertex;I)V",

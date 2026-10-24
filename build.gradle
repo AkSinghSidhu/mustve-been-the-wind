@@ -1,5 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -17,8 +17,8 @@ repositories {
 		url = "https://maven.terraformersmc.com/releases/"
 	}
 	maven {
-		name = "Modrinth"
-		url = "https://api.modrinth.com/maven"
+		name = "CaffeineMC"
+		url = "https://maven.caffeinemc.net/releases/"
 	}
 }
 
@@ -46,19 +46,18 @@ loom {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	modCompileOnly "com.terraformersmc:modmenu:17.0.1"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	// Sodium's renderer is optional at runtime. It is only on the compile
-	// classpath so the compatibility mixins can target its classes.
-	modCompileOnly("maven.modrinth:sodium:${project.sodium_version}") {
+	// Sodium is optional at runtime. Its compatibility mixins are compiled
+	// against this version but only load when Sodium is present.
+	compileOnly("net.caffeinemc:sodium-fabric:${project.sodium_version}") {
 		transitive = false
 	}
 
 	if (project.hasProperty("sodiumTest")) {
-		modRuntimeOnly("maven.modrinth:sodium:${project.sodium_version}") {
+		runtimeOnly("net.caffeinemc:sodium-fabric:${project.sodium_version}") {
 			transitive = false
 		}
 	}
@@ -74,13 +73,13 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 }
 
 java {
 	withSourcesJar()
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {

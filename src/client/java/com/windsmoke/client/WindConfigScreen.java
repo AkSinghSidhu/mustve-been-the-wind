@@ -1,6 +1,6 @@
 package com.windsmoke.client;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -56,7 +56,7 @@ public final class WindConfigScreen extends Screen {
 			int buttonStart = center - buttonWidth - buttonGap / 2;
 			this.addRenderableWidget(Button.builder(
 				Component.translatable("windsmoke.config.debug"),
-				button -> this.minecraft.setScreen(new WindDebugScreen(this))
+				button -> this.minecraft.setScreenAndShow(new WindDebugScreen(this))
 			).bounds(buttonStart, this.height - 30, buttonWidth, 20).build());
 			this.addRenderableWidget(Button.builder(
 				Component.translatable("windsmoke.config.done"),
@@ -71,21 +71,21 @@ public final class WindConfigScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-		super.render(graphics, mouseX, mouseY, partialTick);
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+		super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 		boolean compact = this.height < 320;
-		graphics.drawCenteredString(
+		graphics.centeredText(
 			this.font, this.title, this.width / 2, compact ? 10 : 18, 0xFFFFFFFF);
 		// These sit above the controls so they can never collide with the
 		// bottom Done button on small GUI scales.
-		graphics.drawCenteredString(
+		graphics.centeredText(
 			this.font,
 			Component.translatable("windsmoke.config.note"),
 			this.width / 2,
 			compact ? 24 : 34,
 			0xFFA0A0A0
 		);
-		graphics.drawCenteredString(
+		graphics.centeredText(
 			this.font,
 			Component.translatable("windsmoke.config.note.distance"),
 			this.width / 2,
@@ -96,7 +96,7 @@ public final class WindConfigScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(this.parent);
+		this.minecraft.setScreenAndShow(this.parent);
 	}
 
 	private static Component qualityLabel() {

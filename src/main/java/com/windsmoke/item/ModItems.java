@@ -2,7 +2,7 @@ package com.windsmoke.item;
 
 import com.windsmoke.WindSmoke;
 import com.windsmoke.block.ModBlocks;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -23,7 +23,7 @@ public final class ModItems {
 
 	public static void register() {
 		Registry.register(BuiltInRegistries.ITEM, WIND_VANE_KEY, WIND_VANE);
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.REDSTONE_BLOCKS)
-			.register(entries -> entries.accept(WIND_VANE));
+		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.REDSTONE_BLOCKS)
+			.register(output -> output.accept(WIND_VANE));
 	}
 }

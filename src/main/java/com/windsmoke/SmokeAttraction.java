@@ -55,12 +55,12 @@ public final class SmokeAttraction {
 		// instead of scanning the same campfire several times per second.
 		LongOpenHashSet chunks = new LongOpenHashSet();
 		for (ServerPlayer player : level.players()) {
-			int centerX = player.chunkPosition().x;
-			int centerZ = player.chunkPosition().z;
+			int centerX = player.chunkPosition().x();
+			int centerZ = player.chunkPosition().z();
 
 			for (int dx = -CHUNK_RADIUS; dx <= CHUNK_RADIUS; dx++) {
 				for (int dz = -CHUNK_RADIUS; dz <= CHUNK_RADIUS; dz++) {
-					chunks.add(ChunkPos.asLong(centerX + dx, centerZ + dz));
+					chunks.add(ChunkPos.pack(centerX + dx, centerZ + dz));
 				}
 			}
 		}

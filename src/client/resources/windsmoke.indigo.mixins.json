@@ -1,10 +1,10 @@
 {
 	"required": false,
 	"package": "com.windsmoke.client.mixin.indigo",
-	"compatibilityLevel": "JAVA_21",
+	"compatibilityLevel": "JAVA_25",
 	"plugin": "com.windsmoke.client.WindSmokeMixinPlugin",
 	"client": [
-		"IndigoTerrainContextMixin"
+		"IndigoAltModelBlockRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
