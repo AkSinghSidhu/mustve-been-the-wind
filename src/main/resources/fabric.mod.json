@@ -34,6 +34,10 @@
 		{
 			"config": "windsmoke.indigo.mixins.json",
 			"environment": "client"
+		},
+		{
+			"config": "windsmoke.sodium.mixins.json",
+			"environment": "client"
 		}
 	],
 	"depends": {

@@ -16,6 +16,10 @@ repositories {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/releases/"
 	}
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+	}
 }
 
 loom {
@@ -46,6 +50,18 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	modCompileOnly "com.terraformersmc:modmenu:17.0.1"
+
+	// Sodium's renderer is optional at runtime. It is only on the compile
+	// classpath so the compatibility mixins can target its classes.
+	modCompileOnly("maven.modrinth:sodium:${project.sodium_version}") {
+		transitive = false
+	}
+
+	if (project.hasProperty("sodiumTest")) {
+		modRuntimeOnly("maven.modrinth:sodium:${project.sodium_version}") {
+			transitive = false
+		}
+	}
 }
 
 processResources {

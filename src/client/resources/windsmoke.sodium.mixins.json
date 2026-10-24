@@ -1,0 +1,16 @@
+{
+	"required": false,
+	"package": "com.windsmoke.client.mixin.sodium",
+	"compatibilityLevel": "JAVA_21",
+	"plugin": "com.windsmoke.client.WindSmokeSodiumMixinPlugin",
+	"client": [
+		"SodiumBlockRendererMixin",
+		"SodiumChunkMeshBufferBuilderMixin",
+		"SodiumGlProgramMixin",
+		"SodiumShaderWorkaroundsMixin",
+		"SodiumTranslucentGeometryCollectorMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

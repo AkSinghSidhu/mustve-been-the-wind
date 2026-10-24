@@ -36,9 +36,9 @@ public final class WindSway {
 	static final int CATEGORY_LEAF = 3;
 
 	/**
-	 * Sodium's terrain shader is separate from vanilla's. Until the Sodium
-	 * shader is patched, leave its vertices untouched instead of writing a
-	 * code that nothing would decode.
+	 * Sodium uses a different chunk renderer and shader. Its vertices are
+	 * tagged by the Sodium compatibility mixins instead of this consumer
+	 * wrapper, so the wrapper stays disabled under Sodium.
 	 */
 	private static final boolean SODIUM = FabricLoader.getInstance().isModLoaded("sodium");
 
@@ -50,7 +50,14 @@ public final class WindSway {
 	}
 
 	public static void begin(BlockState state, BlockPos pos) {
-		CONTEXT.set(new Context(state, pos));
+		Profile profile = profile(state);
+
+		if (profile == Profile.NONE) {
+			CONTEXT.remove();
+			return;
+		}
+
+		CONTEXT.set(new Context(state, pos, profile));
 	}
 
 	public static void end() {
@@ -61,6 +68,16 @@ public final class WindSway {
 	public static VertexConsumer wrapCurrent(VertexConsumer delegate) {
 		Context context = CONTEXT.get();
 		return context == null ? delegate : wrap(context.state(), context.pos(), delegate);
+	}
+
+	/**
+	 * Tags a vertex emitted by Sodium's chunk renderer. Sodium writes vertices
+	 * directly instead of using a {@link VertexConsumer}, so the compatibility
+	 * mixins call this with the block currently being rendered.
+	 */
+	public static int tagCurrent(int color, float vertexY) {
+		Context context = CONTEXT.get();
+		return context == null ? color : tagColor(context.state(), context.pos(), context.profile(), color, vertexY);
 	}
 
 	public static VertexConsumer wrap(BlockState state, BlockPos pos, VertexConsumer delegate) {
@@ -109,7 +126,45 @@ public final class WindSway {
 		HANGING
 	}
 
-	private record Context(BlockState state, BlockPos pos) {
+	private record Context(BlockState state, BlockPos pos, Profile profile) {
+	}
+
+	private static int tagColor(BlockState state, BlockPos pos, Profile profile, int color, float vertexY) {
+		// Chunk meshes are stored section-local, so undo the block's
+		// section-relative origin rather than its absolute world Y.
+		float localY = vertexY - (pos.getY() & 15);
+		int category;
+
+		switch (profile) {
+			case HANGING -> {
+				float weight = 1.0F - Mth.clamp(localY, 0.0F, 1.0F);
+				return withCode(color, CATEGORY_HANGING, weight);
+			}
+			case CROP -> category = CATEGORY_CROP;
+			case LEAF -> category = CATEGORY_LEAF;
+			default -> category = CATEGORY_PLANT;
+		}
+
+		float weight;
+		if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)) {
+			if (state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
+				// Continue the lower half's lean: 0.5 at the seam, 1.0 at the top.
+				weight = 0.5F + 0.5F * Mth.clamp(localY, 0.0F, 1.0F);
+			} else {
+				// Stop at 0.5 where the upper half begins.
+				weight = 0.5F * Mth.clamp(localY, 0.0F, 1.0F);
+			}
+		} else {
+			weight = Mth.clamp(localY, 0.0F, 1.0F);
+		}
+
+		return withCode(color, category, weight);
+	}
+
+	private static int withCode(int color, int category, float weight) {
+		int code = category * 16 + Math.round(Mth.clamp(weight, 0.0F, 1.0F) * 15.0F);
+		int alpha = 254 - code;
+		return (color & 0xFFFFFF) | (alpha << 24);
 	}
 
 	private static final class WindVertexConsumer implements VertexConsumer {
@@ -127,41 +182,7 @@ public final class WindSway {
 		}
 
 		private int tag(int color, float vertexY) {
-			// Chunk meshes are stored section-local, so undo the block's
-			// section-relative origin rather than its absolute world Y.
-			float localY = vertexY - (this.pos.getY() & 15);
-			int category;
-
-			switch (this.profile) {
-				case HANGING -> {
-					float weight = 1.0F - Mth.clamp(localY, 0.0F, 1.0F);
-					return withCode(color, CATEGORY_HANGING, weight);
-				}
-				case CROP -> category = CATEGORY_CROP;
-				case LEAF -> category = CATEGORY_LEAF;
-				default -> category = CATEGORY_PLANT;
-			}
-
-			float weight;
-			if (this.state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)) {
-				if (this.state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
-					// Continue the lower half's lean: 0.5 at the seam, 1.0 at the top.
-					weight = 0.5F + 0.5F * Mth.clamp(localY, 0.0F, 1.0F);
-				} else {
-					// Stop at 0.5 where the upper half begins.
-					weight = 0.5F * Mth.clamp(localY, 0.0F, 1.0F);
-				}
-			} else {
-				weight = Mth.clamp(localY, 0.0F, 1.0F);
-			}
-
-			return withCode(color, category, weight);
-		}
-
-		private static int withCode(int color, int category, float weight) {
-			int code = category * 16 + Math.round(Mth.clamp(weight, 0.0F, 1.0F) * 15.0F);
-			int alpha = 254 - code;
-			return (color & 0xFFFFFF) | (alpha << 24);
+			return tagColor(this.state, this.pos, this.profile, color, vertexY);
 		}
 
 		@Override

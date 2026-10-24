@@ -20,9 +20,8 @@ public class WindSmokeClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		WindSmokeConfig.load();
 		if (FabricLoader.getInstance().isModLoaded("sodium")) {
-			com.windsmoke.WindSmoke.LOGGER.warn(
-				"Sodium detected: terrain vegetation sway is disabled until Sodium shader integration is available. "
-					+ "Banners, campfire smoke, clouds, rain and the wind vane still use the wind system."
+			com.windsmoke.WindSmoke.LOGGER.info(
+				"Sodium detected: Sodium terrain wind sway integration enabled."
 			);
 		}
 		BlockEntityRenderers.register(ModBlockEntities.WIND_VANE, context -> new WindVaneRenderer());

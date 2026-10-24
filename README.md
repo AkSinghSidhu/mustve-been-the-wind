@@ -100,11 +100,15 @@ Banner cloth uses a fixed-step simulation only near the camera, with a bounded n
 simulations and a coarse static grid for distant banners. Pattern layers share the same per-frame
 positions and normals.
 
-## Known compatibility limitation
+## Sodium compatibility
 
-Sodium replaces vanilla's terrain renderer and shader. Terrain vegetation and hanging-block sway are
-therefore disabled when Sodium is detected; banners, campfire smoke, clouds and rain are unaffected.
-A Sodium-specific terrain integration is a separate compatibility project.
+Sodium **0.8.7+mc1.21.11** is supported as an optional client integration. When Sodium is installed,
+Must've Been the Wind patches Sodium's terrain shader at runtime and tags Sodium's chunk vertices, so
+grass, flowers, crops, leaves and hanging lanterns sway under Sodium's renderer too. The vanilla and
+Fabric Indigo renderer paths remain unchanged.
+
+The integration is client-side and version-specific. Other Sodium versions, Iris shader packs and the
+26.2 renderer are not covered yet.
 
 ## Requirements
 
@@ -114,6 +118,7 @@ A Sodium-specific terrain integration is a separate compatibility project.
 | Fabric Loader | 0.19.5 or newer |
 | Fabric API | 0.141.6+1.21.11 or newer |
 | Java | 21 or newer |
+| Sodium (optional) | 0.8.7+mc1.21.11 (tested) |
 
 Install the mod on both the client and server. The server owns the wind state; the client uses it for
 the visual effects.

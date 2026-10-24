@@ -20,7 +20,12 @@ public final class WindShaderPatcher {
 		"vec3\\s+(pos)\\s*=\\s*Position\\b[^;]*;");
 	private static final Pattern VERTEX_COLOR = Pattern.compile(
 		"vertexColor\\s*=\\s*Color\\b[^;]*;");
+	private static final Pattern SODIUM_INIT = Pattern.compile(
+		"_vert_init\\s*\\(\\s*\\)\\s*;");
+	private static final Pattern SODIUM_POSITION = Pattern.compile(
+		"vec3\\s+(position)\\s*=\\s*_vert_position\\s*\\+\\s*translation\\s*;");
 	private static final AtomicBoolean LOGGED = new AtomicBoolean();
+	private static final AtomicBoolean LOGGED_SODIUM = new AtomicBoolean();
 
 	private static final String HEADER = """
 		uniform vec4 WindSmokeInfo;
@@ -165,12 +170,33 @@ public final class WindShaderPatcher {
 		    }
 		""";
 
+	private static final String SODIUM_INIT_BODY = """
+
+	    float windsmokeCode = windsmoke_code(_vert_color.a);
+	    if (windsmokeCode >= 0.0 && windsmokeCode < 64.0) {
+	        _vert_color.a = 1.0;
+	    }
+	""";
+
+	private static final String SODIUM_POSITION_BODY = """
+
+	    if (windsmokeCode >= 0.0 && windsmokeCode < 64.0) {
+	        position += windsmoke_offset(position, windsmokeCode);
+	    }
+	""";
+
 	private WindShaderPatcher() {
 	}
 
 	public static String patch(String source) {
 		if (source == null || source.contains("WindSmokeInfo")) {
 			return source;
+		}
+
+		if (source.contains("_vert_init")
+			&& source.contains("a_Color")
+			&& source.contains("u_RegionOffset")) {
+			return patchSodium(source);
 		}
 
 		if (!source.contains("in vec4 Color;") || !source.contains("ChunkPosition")) {
@@ -210,6 +236,37 @@ public final class WindShaderPatcher {
 			return out.toString();
 		} catch (RuntimeException exception) {
 			LOGGER.warn("[windsmoke] could not patch terrain shader", exception);
+			return source;
+		}
+	}
+
+	private static String patchSodium(String source) {
+		Matcher init = SODIUM_INIT.matcher(source);
+		Matcher position = SODIUM_POSITION.matcher(source);
+		int main = source.indexOf("void main()");
+
+		if (!init.find() || !position.find() || main < 0 || position.start() < main) {
+			return source;
+		}
+
+		try {
+			StringBuilder out = new StringBuilder(source);
+
+			// Sodium's vertex shader already builds a world-space position.
+			// Decode the alpha tag after _vert_init, restore the colour alpha,
+			// then displace the world position before the MVP transform.
+			out.insert(position.end(), SODIUM_POSITION_BODY);
+			out.insert(init.end(), SODIUM_INIT_BODY);
+			out.insert(main, HEADER);
+
+			if (LOGGED_SODIUM.compareAndSet(false, true)) {
+				LOGGER.info("[windsmoke] patched Sodium terrain shader for GPU wind sway");
+			}
+
+			WindShaderUniforms.shadersChanged();
+			return out.toString();
+		} catch (RuntimeException exception) {
+			LOGGER.warn("[windsmoke] could not patch Sodium terrain shader", exception);
 			return source;
 		}
 	}
